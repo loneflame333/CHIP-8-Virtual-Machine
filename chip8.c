@@ -27,7 +27,7 @@ OperationCode decode(uint16_t opcode) {
     return decoded;
 }
 
-void execute(uint8_t* v, uint16_t* PC, OperationCode decoded, uint16_t* stack, int8_t* SP, uint16_t I, uint8_t* memory, bool display[32][64]) {
+void execute(uint8_t* v, uint16_t* PC, OperationCode decoded, uint16_t* stack, int8_t* SP, uint16_t* I, uint8_t* memory, bool display[32][64]) {
     if(decoded.instruction == 0x0 && decoded.x == 0 && decoded.kk == 0xEE) {
         *PC = stack[*SP];
         *SP -= 1;
@@ -131,8 +131,9 @@ void execute(uint8_t* v, uint16_t* PC, OperationCode decoded, uint16_t* stack, i
         }
         *PC += 2;
     }
-    else if(decoded.instruction == 0xB) {
-        *PC = decoded.nnn + v[0];
+    else if(decoded.instruction == 0xA) {
+        *I = decoded.nnn;
+        *PC += 2;
     }
     else if(decoded.instruction == 0xB) {
         *PC = decoded.nnn + v[0];
