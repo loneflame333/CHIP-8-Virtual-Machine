@@ -172,7 +172,7 @@ int main() {
     for(int i = 0; i < 1; i++) {
         uint16_t opcode = fetch(PC, memory);
         OperationCode decoded = decode(opcode);
-        execute(registers, &PC, decoded, stack, &sp, I, memory, display);
+        execute(registers, &PC, decoded, stack, &sp, &I, memory, display);
     }
     return 0;
 }
