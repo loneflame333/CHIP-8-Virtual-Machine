@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
 
 typedef struct OperationCode {
     uint8_t instruction;
@@ -138,6 +140,11 @@ void execute(uint8_t* v, uint16_t* PC, OperationCode decoded, uint16_t* stack, i
     else if(decoded.instruction == 0xB) {
         *PC = decoded.nnn + v[0];
     }
+    else if(decoded.instruction == 0xC) {
+        int randomByte = rand() % 256;
+        v[decoded.x] = randomByte & decoded.kk;
+        *PC += 2;
+    }
     else if(decoded.instruction == 0xD) {
         v[0X0F] = 0;
         // Sprite Length in Y-axis
@@ -166,9 +173,7 @@ int main() {
     uint16_t stack[16];
     int8_t sp = -1;
     PC = 0x200;
-    registers[1] = 0x90;
-    memory[0x240] = 0x00;
-    // memory[0x241] = 0x22;
+    srand(time(NULL));
     for(int i = 0; i < 1; i++) {
         uint16_t opcode = fetch(PC, memory);
         OperationCode decoded = decode(opcode);
