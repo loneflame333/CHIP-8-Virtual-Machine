@@ -174,6 +174,12 @@ void execute(uint8_t* v, uint16_t* PC, OperationCode decoded, uint16_t* stack, i
         memory[*I+2] = num;
         *PC += 2;
     }
+    else if(decoded.instruction == 0xF && decoded.kk == 0x55) {
+        for(int i = 0; i <= decoded.x; i++) {
+            memory[*I + i] = v[i];
+        }
+        *PC += 2;
+    }
 }
 
 int main() {
