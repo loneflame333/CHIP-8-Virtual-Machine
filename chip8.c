@@ -165,6 +165,15 @@ void execute(uint8_t* v, uint16_t* PC, OperationCode decoded, uint16_t* stack, i
         *I += v[decoded.x];
         *PC += 2;
     }
+    else if(decoded.instruction == 0xF && decoded.kk == 0x33) {
+        int num = v[decoded.x];
+        memory[*I] = num / 100;
+        num %= 100;
+        memory[*I+1] = num / 10;
+        num %= 10;
+        memory[*I+2] = num;
+        *PC += 2;
+    }
 }
 
 int main() {
