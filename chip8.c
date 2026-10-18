@@ -180,6 +180,12 @@ void execute(uint8_t* v, uint16_t* PC, OperationCode decoded, uint16_t* stack, i
         }
         *PC += 2;
     }
+    else if(decoded.instruction == 0xF && decoded.kk == 0x65) {
+        for(int i = 0; i <= decoded.x; i++) {
+            v[i] = memory[*I + i];
+        }
+        *PC += 2;
+    }
 }
 
 int main() {
