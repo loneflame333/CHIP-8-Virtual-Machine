@@ -161,13 +161,16 @@ void execute(uint8_t* v, uint16_t* PC, OperationCode decoded, uint16_t* stack, i
         }
         *PC += 2;
     }
+    else if(decoded.instruction == 0xF && decoded.y == 0x1 && decoded.n == 0xE) {
+        *I += v[decoded.x];
+        *PC += 2;
+    }
 }
 
 int main() {
     uint8_t memory[4096] = {0};
     uint8_t registers[16] = {0};
     bool display[32][64] = {0};
-    display[10][20] = 1;
     uint16_t I = 0;
     uint16_t PC; 
     uint16_t stack[16];
