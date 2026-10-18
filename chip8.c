@@ -29,7 +29,7 @@ OperationCode decode(uint16_t opcode) {
     return decoded;
 }
 
-void execute(uint8_t* v, uint16_t* PC, OperationCode decoded, uint16_t* stack, int8_t* SP, uint16_t* I, uint8_t* memory, bool display[32][64]) {
+void execute(uint8_t* v, uint16_t* PC, OperationCode decoded, uint16_t* stack, int8_t* SP, uint16_t* I, uint8_t* memory, bool display[32][64], bool* keypad) {
     if(decoded.instruction == 0x0 && decoded.x == 0 && decoded.kk == 0xEE) {
         *PC = stack[*SP];
         *SP -= 1;
@@ -161,6 +161,18 @@ void execute(uint8_t* v, uint16_t* PC, OperationCode decoded, uint16_t* stack, i
         }
         *PC += 2;
     }
+    else if(decoded.instruction == 0xE && decoded.kk == 0x9E) {
+        if(keypad[v[decoded.x]]) {
+            *PC += 2;
+        }
+        *PC += 2;
+    }
+    else if(decoded.instruction == 0xE && decoded.kk == 0xA1) {
+        if(!keypad[v[decoded.x]]) {
+            *PC += 2;
+        }
+        *PC += 2;
+    }
     else if(decoded.instruction == 0xF && decoded.y == 0x1 && decoded.n == 0xE) {
         *I += v[decoded.x];
         *PC += 2;
@@ -190,8 +202,9 @@ void execute(uint8_t* v, uint16_t* PC, OperationCode decoded, uint16_t* stack, i
 
 int main() {
     uint8_t memory[4096] = {0};
-    uint8_t registers[16] = {0};
+    uint8_t v[16] = {0};
     bool display[32][64] = {0};
+    bool keypad[16] = {false};
     uint16_t I = 0;
     uint16_t PC; 
     uint16_t stack[16];
@@ -201,7 +214,7 @@ int main() {
     for(int i = 0; i < 1; i++) {
         uint16_t opcode = fetch(PC, memory);
         OperationCode decoded = decode(opcode);
-        execute(registers, &PC, decoded, stack, &sp, &I, memory, display);
+        execute(v, &PC, decoded, stack, &sp, &I, memory, display, keypad);
     }
     return 0;
 }
